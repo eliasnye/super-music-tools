@@ -7,6 +7,7 @@ import gi
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, Gio, GObject
 from list_info import TextItem, TrackItem
+from pathlib import Path
 
 # AlbumManager is a Python Singleton which handles various 
 # events/communications etc for the current album.
@@ -16,6 +17,7 @@ class AlbumManager:
     _instance = None
     album = None
     music_dir = os.path.expanduser("~/Music") + "/"
+    cache_dir = "./cache"
     on_track_complete_callbacks = []
     on_image_update_callbacks = []
     on_album_clear_callbacks = []
@@ -100,8 +102,24 @@ class AlbumManager:
     # Load configs and establish central list model for track list data
     def load_config(self):
         self.list_model = Gio.ListStore(item_type=TrackItem)
-        if os.path.exists('config.yml'):
-            with open('config.yml', 'r') as file:
+        
+        app_name = "super_music_tools"
+        config_dir = Path(os.getenv("XDG_CONFIG_HOME", Path.home() / ".config")) / app_name
+        config_dir.mkdir(parents=True, exist_ok=True)
+
+        config_file = config_dir / "config.yml"
+
+        cache_dir_tmp = Path(os.getenv("XDG_CONFIG_HOME", Path.home() / ".config")) / app_name / "cache"
+        cache_dir_tmp.mkdir(parents=True, exist_ok=True)
+
+        self.cache_dir = str(cache_dir_tmp)
+
+        print("CACHE DIR = " + self.cache_dir)
+
+        if not config_file.exists():
+            config_file.write_text("config:\n    music_dir: \"" + self.music_dir + "\"")
+        else:
+            with open(str(config_file), 'r') as file:
                 user_prefs = yaml.safe_load(file)
                 self.music_dir = user_prefs['config']['music_dir']
                 if self.music_dir.endswith("/") == False:

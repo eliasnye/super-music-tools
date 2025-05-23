@@ -1,5 +1,4 @@
-
-
+# Please read the accompanying license document and readme file
 import time
 
 import sys
@@ -10,7 +9,7 @@ import threading
 import shutil
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import Gtk, Gdk, Gio, GLib
 import yaml
 from cdgui import CDGui
 from gi.repository import Graphene
@@ -393,7 +392,7 @@ window {
             has_image = AlbumManager().populate_from_folder(file.get_path())
             print("HAS IMAGE = " + str(has_image))
             if has_image == True:
-                self.cd_gui.load_image("./cache/temp.png")
+                self.cd_gui.load_image(AlbumManager().cache_dir + "/temp.png")
             self.cd_gui.album_source = "FOLDER"
             self.cd_gui.playback_mode = "FILE"     
             self.cd_gui.refresh_list_box()

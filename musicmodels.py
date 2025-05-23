@@ -163,7 +163,7 @@ class TrackProperties:
             for picture in audio.pictures:
                 if picture.type == 3:  # COVER_FRONT
                     image_data = picture.data
-                    with open("./cache/temp.png", "wb") as f:
+                    with open(self.album_manager.cache_dir + "/temp.png", "wb") as f:
                         f.write(image_data)
                     return True
 
@@ -384,7 +384,7 @@ class AlbumProperties:
 
             track.title = f"Track " + ripping_track_as_str
 
-            track.path = f"./cache/track" + ripping_track_as_str + ".wav";
+            track.path = f"" + self.album_manager.cache_dir + "/track" + ripping_track_as_str + ".wav";
             track.length = tracks[i].seconds
             self.tracks.append(track)
 
@@ -414,12 +414,12 @@ class AlbumProperties:
 
                 target_filename = "track" + self.ripping_track_as_str + ".wav";
                 target_flac_filename = "track" + self.ripping_track_as_str + ".flac";
-                args = ["cdparanoia", str(self.ripping_track), "./cache/" + target_filename]
+                args = ["cdparanoia", str(self.ripping_track), self.album_manager.cache_dir + "/" + target_filename]
                 self.ripping_process = subprocess.Popen(args)
                 return_code = self.ripping_process.wait()
                 # if bad exit error from cdparanoia process above, exit
                 if return_code == 0:
-                    self.tag_and_store_track(self.ripping_track, "./cache/" + target_filename, "./cache/" + target_flac_filename)
+                    self.tag_and_store_track(self.ripping_track, self.album_manager.cache_dir + "/" + target_filename, self.album_manager.cache_dir + "/" + target_flac_filename)
                     self.sync_rip()
             else:
                 self.sync_rip()
@@ -440,14 +440,14 @@ class AlbumProperties:
         if hasattr(self, "ripv2_thread") and self.ripping_process is not None:
             self.ripping_process.terminate()
             self.ripv2_thread.join()
-            os.remove("./cache/track" + self.ripping_track_as_str + ".wav")
+            os.remove(self.album_manager.cache_dir + "/track" + self.ripping_track_as_str + ".wav")
             self.ripping_process = None
 
     def request_rip_immediately(self, next_playing_index):
         if hasattr(self, "ripv2_thread") and hasattr(self, "ripping_process"):
             self.ripping_process.terminate()
             self.ripv2_thread.join()
-            os.remove("./cache/track" + self.ripping_track_as_str + ".wav")
+            os.remove(self.album_manager.cache_dir + "/track" + self.ripping_track_as_str + ".wav")
             self.ripping_process = None
 
         self.ripping_track = next_playing_index
@@ -583,7 +583,7 @@ class AlbumProperties:
         # Resize the image
         img_resized = img.resize(new_size)
 
-        img_resized.save('./cache/temp.png', 'PNG')
+        img_resized.save(self.album_manager.cache_dir + "/temp.png", 'PNG')
 
         self.picture = mutagen.flac.Picture()
         self.picture.type = mutagen.id3.PictureType.COVER_FRONT
@@ -593,7 +593,7 @@ class AlbumProperties:
         self.picture.depth = bitDepth  # color depth
 
         # Assign the binary image data
-        with open('./cache/temp.png', 'rb') as f:
+        with open(self.album_manager.cache_dir + "/temp.png", 'rb') as f:
             self.picture.data = f.read()
 
     def pause_or_resume(self):

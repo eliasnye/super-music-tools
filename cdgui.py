@@ -7,7 +7,7 @@ import subprocess
 import shutil
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Gio, Gsk, Gdk, Graphene
+from gi.repository import Gtk, Gio, Gsk, Gdk, Graphene, GLib
 from pydbus import SystemBus
 from pydbus import SessionBus
 import pydbus
@@ -261,7 +261,7 @@ class CDGui:
 
         
     def clear_cache_directory(self):
-        folder = './cache'
+        folder = AlbumManager().cache_dir
         for filename in os.listdir(folder):
             file_path = os.path.join(folder, filename)
             try:
@@ -274,6 +274,10 @@ class CDGui:
 
     def load_cd(self, callback_event):
         self.status_label.set_label("Loading CD...")
+        ctx = GLib.MainContext.default()
+        while ctx.pending():
+            ctx.iteration(True)
+
         self.inhibitCookie = self._inhibit("super_music_tools", 0, "Prevent system sleep during playback", 4)
         self.clear_cache_directory()
         self.requested_track = 1
@@ -417,11 +421,11 @@ class CDGui:
                         image_filename = ""
 
                         if mime_type == "image/jpeg":
-                            image_filename = "./cache/cover.jpg"
+                            image_filename = AlbumManager().cache_dir + "/cover.jpg"
                         elif mime_type == "image/gif":
-                            image_filename = "./cache/cover.gif"
+                            image_filename = AlbumManager().cache_dir + "/cover.gif"
                         elif mime_type == "image/png":
-                            image_filename = "./cache/cover.png"
+                            image_filename = AlbumManager().cache_dir + "/cover.png"
             
                         if image_filename != "":
                             with open(image_filename, 'wb') as binary_file:
