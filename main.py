@@ -8,7 +8,6 @@ import subprocess
 import threading
 import shutil
 gi.require_version('Gtk', '4.0')
-gi.require_version('Adw', '1')
 from gi.repository import Gtk, Gdk, Gio, GLib
 import yaml
 from cdgui import CDGui
@@ -431,6 +430,12 @@ window {
 class MyApp(Gtk.Application):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        try:
+            import pyi_splash
+            pyi_splash.update_text("UI Loaded ...")
+            pyi_splash.close()
+        except:
+            pass
         self.connect('activate', self.on_activate)
         self.connect('shutdown', self.on_destroy)
 

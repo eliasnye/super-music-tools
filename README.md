@@ -36,10 +36,7 @@ When the app loads a new CD in the drive, it immediately starts running CD Paran
 
 Part of the main purpose of this app for me is being able to quickly type in an album artist and title during the rip if the album is not in the online database. This is particularly useful when buying CDs at shows by small local bands. The album won't be fully tagged, but it is roughly titled in the right folder and additional tags can then be added at leisure during playback. This makes the whole process of manually ripping and tagging obscure CDs much more painless.
 
-By default, music will be ripped to your Music folder in home. Please note that this app is in pre alpha and will quite happily over write existing files. If you want to use a different music folder you just need to add a config.yml file to the same folder as the app, and specify your folder like this:
-
-config:
-    music_dir: "/media/my_username/Music/"
+By default, music will be ripped to your Music folder in home. Please note that this app is in pre alpha and will quite happily over write existing files. If you want to use a different music folder, you need to find the config file (usually in ~/.config/super_music_tools/config.yml) after running the app at least once. Then you can specify the desired folder as the music_dir property.
 
 Albums are always put into a parent folder with the same name as the album artist, then a sub folder with the album title. Rips are always done as FLAC. There will be more options and formats for this supported in future. Likewise if you choose to open a folder, that folder can be anywhere but must contain FLAC files.
 
@@ -47,7 +44,7 @@ Please note, at the moment it overwrites existing flac files without hesitation!
 
 ## Running from source/Building
 
-You must use Python 3.12 - create a Python 3.12 Virtual env and pip[ install:
+You must use Python 3.12 - create a Python 3.12 Virtual env and pip install:
 
 pyyaml
 pycairo
@@ -59,10 +56,12 @@ mutagen
 pillow
 opencv-python
 dbus-python
-PyGObject - must be pegged at 3.50.0
+PyGObject - must be pegged at 3.50.0, ie. pip install pygobject==3.50.0
 mpris_server
 pathvalidate
 pyudev
+python-magic
+pyinstaller (only required if you want to build the binary)
 
 On furios this required me to install using apt:
 
@@ -80,10 +79,15 @@ sox
 
 After that it's just python3.12 main.py with your virtual environment activated.
 
-You can build the app using pyinstaller.
+You can build the app using pyinstaller:
 
-After the standard build you need to copy the contents of emoji/unicode_codes from your Python Lib to _internal/emoji/unicode_codes
-You also need to ensure that there is a folder called "cache" at the same level as your main executable.
+load up your Virtual Environment as before.
+pip install pyinstaller.
+You will need the location of the emoji package's unicode json files. Use:
 
+python3 -m pip show emoji
 
+Then run pyinstaller as follows:
+
+pyinstaller --add-data "[LOCATION_FROM_ABOVE_COMMAND_FOR_EMOJI]/emoji/unicode_codes/*.json:emoji/unicode_codes" --name super_music_tools --onefile --splash=icons/splash.png main.py
 

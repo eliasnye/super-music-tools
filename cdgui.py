@@ -6,7 +6,6 @@ import gi
 import subprocess
 import shutil
 gi.require_version('Gtk', '4.0')
-gi.require_version('Adw', '1')
 from gi.repository import Gtk, Gio, Gsk, Gdk, Graphene, GLib
 from pydbus import SystemBus
 from pydbus import SessionBus
