@@ -10,6 +10,9 @@ import threading
 import sys
 import time
 import datetime
+import gi
+gi.require_version('Gtk', '4.0')
+from gi.repository import Gtk, Gdk, Gio, GLib
 from mpris_server import Track, Album
 from list_info import TextItem, TrackItem, compare_track_items
 from pathvalidate import sanitize_filepath
@@ -216,14 +219,14 @@ class TrackProperties:
 
         if hasattr(self, "playback_thread"):
             self.playback_thread.join()
-        self.album_manager.on_album_data_change()
+        GLib.idle_add(self.album_manager.on_album_data_change)
                         
         
     def resume(self):
         self.paused = False
         self.playback_thread = threading.Thread(target=self.do_playback)
         self.playback_thread.start()
-        self.album_manager.on_album_data_change()
+        GLib.idle_add(self.album_manager.on_album_data_change)
     
     def stop(self):
         if self.play_lock == True:
@@ -253,7 +256,7 @@ class TrackProperties:
         
         if self.paused == False:
             self.play_lock = False
-            self.album_manager.on_track_complete()
+            GLib.idle_add(self.album_manager.on_track_complete)
         
         
     def callback(stdout, stderr):
@@ -339,14 +342,14 @@ class AlbumProperties:
             self.artist = artist
             for track in self.tracks:
                 track.change_staged = True
-            self.album_manager.on_album_data_change()
+            GLib.idle_add(self.album_manager.on_album_data_change)
 
     def set_title(self, title):
         if title != self.title:
             self.title = title
             for track in self.tracks:
                 track.change_staged = True
-            self.album_manager.on_album_data_change()
+            GLib.idle_add(self.album_manager.on_album_data_change)
 
 
     def get_first_available_cover_image_data(self):
@@ -398,8 +401,8 @@ class AlbumProperties:
         callback_event.wait()
         print("CB Event Set")
         self.ripping_status = RIP_IN_PROGRESS
-        self.album_manager.on_album_data_change()
-        self.album_manager.on_cd_fetch_complete()
+        GLib.idle_add(self.album_manager.on_album_data_change)
+        GLib.idle_add(self.album_manager.on_cd_fetch_complete)
         self.fetch_cd_info_thread.join()
         
         
@@ -433,7 +436,7 @@ class AlbumProperties:
             self.ripping_process = None
             self.ripping_status = RIP_COMPLETE
 
-            self.album_manager.on_album_rip_complete()
+            GLib.idle_add(self.album_manager.on_album_rip_complete)
 
         
     def cancel_current_rip(self):
@@ -510,7 +513,7 @@ class AlbumProperties:
                 if 'ALBUMARTIST' in tags and len(tags['ALBUMARTIST']) > 0:
                     self.artist = tags['ALBUMARTIST'][0]
 
-        self.album_manager.on_album_data_change()
+        GLib.idle_add(self.album_manager.on_album_data_change)
 
         return self.get_first_available_cover_image_data()
 
@@ -633,7 +636,7 @@ class AlbumProperties:
             self.current_playing_index = next_playing_index            
             self.tracks[next_playing_index].play()
             self.next_playing_index = next_playing_index + 1
-            self.album_manager.on_album_data_change()
+            GLib.idle_add(self.album_manager.on_album_data_change)
             
     def request_track_immediately(self, next_playing_index):
         if next_playing_index >= 0 and next_playing_index < len(self.tracks):
@@ -664,7 +667,7 @@ class AlbumProperties:
         for track in self.tracks:
             track.catch_up()
         self.request_track(self.next_playing_index)
-        self.album_manager.on_album_data_change()
+        GLib.idle_add(self.album_manager.on_album_data_change)
 
     def get_ripping_summary(self):
         if self.ripping_status == RIP_IN_PROGRESS:
