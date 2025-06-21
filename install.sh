@@ -66,6 +66,7 @@ Type=Application
 Categories=AudioVideo;Utility;
 EOF
 
+sudo ldconfig
 echo ">>> Done!"
 echo "You’ll now find *Super Music Tools* in your application menu."
 
