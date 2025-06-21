@@ -16,7 +16,7 @@ sudo apt install -y \
 echo ">>> Installing libdiscid from source..."
 
 LIBDISCID_VERSION="0.6.5"
-LIBDISCID_URL="https://ftp.osuosl.org/pub/musicbrainz/libdiscid-${LIBDISCID_VERSION}.tar.gz"
+LIBDISCID_URL="https://ftp.musicbrainz.org/pub/musicbrainz/libdiscid/libdiscid-${LIBDISCID_VERSION}.tar.gz"
 LIBDISCID_DIR="libdiscid-${LIBDISCID_VERSION}"
 
 # Temp directory for build
