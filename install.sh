@@ -11,7 +11,7 @@ sudo apt update
 sudo apt install -y \
     python$PYTHON_VERSION \
     python$PYTHON_VERSION-venv \
-    sox cdparanoia ffmpeg gcc python-is-python3 python3-dev libcairo2-dev libgirepository1.0-dev autoconf libtool libdbus-glib-1-dev ffmpeg sox
+    sox cdparanoia ffmpeg gcc python-is-python3 libpython3-dev libdbus-1-dev python3-dev libcairo2-dev libgirepository1.0-dev autoconf libtool libdbus-glib-1-dev ffmpeg sox
 
 echo ">>> Creating Python $PYTHON_VERSION virtual-env in: $VENV_DIR"
 python$PYTHON_VERSION -m venv "$VENV_DIR"
