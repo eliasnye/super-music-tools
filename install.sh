@@ -13,6 +13,31 @@ sudo apt install -y \
     python$PYTHON_VERSION-venv \
     sox cdparanoia ffmpeg gcc libdbus-1-dev python3.12-dev libcairo2-dev libgirepository1.0-dev autoconf libtool libdbus-glib-1-dev
 
+echo ">>> Installing libdiscid from source..."
+
+LIBDISCID_VERSION="0.6.5"
+LIBDISCID_URL="https://ftp.osuosl.org/pub/musicbrainz/libdiscid-${LIBDISCID_VERSION}.tar.gz"
+LIBDISCID_DIR="libdiscid-${LIBDISCID_VERSION}"
+
+# Temp directory for build
+BUILD_TMP="$(mktemp -d)"
+pushd "$BUILD_TMP"
+
+# Download and extract
+curl -LO "$LIBDISCID_URL"
+tar xf "libdiscid-${LIBDISCID_VERSION}.tar.gz"
+cd "$LIBDISCID_DIR"
+
+# Build and install
+cmake .
+make -j$(nproc)
+sudo make install
+
+# Clean up
+popd
+rm -rf "$BUILD_TMP"
+echo ">>> libdiscid $LIBDISCID_VERSION installed successfully."
+
 echo ">>> Creating Python $PYTHON_VERSION virtual-env in: $VENV_DIR"
 python$PYTHON_VERSION -m venv "$VENV_DIR"
 
