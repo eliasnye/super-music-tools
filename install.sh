@@ -11,7 +11,7 @@ sudo apt update
 sudo apt install -y \
     python$PYTHON_VERSION \
     python$PYTHON_VERSION-venv \
-    sox cdparanoia ffmpeg gcc libdbus-1-dev python3.12-dev libcairo2-dev libgirepository1.0-dev autoconf libtool libdbus-glib-1-dev
+    curl sox cdparanoia ffmpeg gcc libdbus-1-dev python3.12-dev libcairo2-dev libgirepository1.0-dev autoconf libtool libdbus-glib-1-dev
 
 echo ">>> Installing libdiscid from source..."
 
