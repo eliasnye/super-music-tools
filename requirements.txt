@@ -1,0 +1,16 @@
+pyyaml
+pycairo
+pydbus
+discid
+python-libdiscid
+musicbrainzngs
+mutagen
+pillow
+opencv-python
+dbus-python
+pygobject==3.50.0
+mpris_server
+pathvalidate
+pyudev
+python-magic
+
